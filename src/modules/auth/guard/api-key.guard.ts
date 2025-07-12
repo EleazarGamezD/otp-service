@@ -38,6 +38,7 @@ export class ApiKeyGuard implements CanActivate {
         tokens: client.tokens,
         tokensUsed: client.tokensUsed,
         rateLimitPerMinute: client.rateLimitPerMinute,
+        otpExpirationSeconds: client.otpExpirationSeconds,
         emailTemplate: client.emailTemplate,
         whatsappTemplate: client.whatsappTemplate
       };

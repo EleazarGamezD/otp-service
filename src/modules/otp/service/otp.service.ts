@@ -1,5 +1,4 @@
 import {OtpChannel} from '@app/core/enums/otp/channel.enum';
-import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
 import {IOtpGenerateResponse, IOtpVerifyResponse} from '@app/core/interfaces/otp/otp.interface';
 import {ClientService} from '@app/modules/clients/service/client.service';
 import {InjectQueue} from '@nestjs/bullmq';
@@ -17,9 +16,7 @@ export class OtpService {
     @InjectQueue('otp-queue') private otpQueue: Queue,
     private configService: ConfigService,
     private clientService: ClientService,
-  ) { }
-
-  async generateOTP(target: string, channel: OtpChannel, apiKey: string): Promise<IOtpGenerateResponse> {
+  ) { } async generateOTP(target: string, channel: OtpChannel, apiKey: string): Promise<IOtpGenerateResponse> {
     // First consume a token for this operation
     const tokenResult = await this.clientService.consumeToken(apiKey);
 
@@ -27,16 +24,20 @@ export class OtpService {
       throw new Error(tokenResult.reason || 'Cannot proceed with OTP generation');
     }
 
-    // Get client info for templates
+    // Get client info for templates and expiration
     const client = await this.clientService.findByApiKey(apiKey);
     if (!client) {
       throw new Error('Client not found');
     }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpConfig = this.configService.get<IConfiguration['otpKeys']>('otpKeys');
-    const expirationTime = otpConfig?.expiration || 45;
-    const expiresAt = new Date(Date.now() + expirationTime * 1000);
+
+    // Use client's custom expiration time instead of global config
+    const expirationTimeSeconds = client.otpExpirationSeconds;
+    const expiresAt = new Date(Date.now() + expirationTimeSeconds * 1000);
+
+    // Calculate expiration minutes for template
+    const expirationMinutes = Math.round(expirationTimeSeconds / 60);
 
     // Store OTP with client reference
     await this.otpModel.create({
@@ -47,19 +48,20 @@ export class OtpService {
       clientId: (client as any)._id
     });
 
-    // Queue OTP with client template information
+    // Queue OTP with client template information and dynamic expiration
     await this.otpQueue.add('send-otp', {
       target,
       code,
       channel,
       clientId: (client as any)._id.toString(),
       emailTemplate: client.emailTemplate,
-      whatsappTemplate: client.whatsappTemplate
+      whatsappTemplate: client.whatsappTemplate,
+      expirationMinutes
     });
 
     return {
       message: 'OTP encolado',
-      expiresIn: expirationTime,
+      expiresIn: expirationTimeSeconds,
       tokensRemaining: tokenResult.tokensRemaining
     };
   }

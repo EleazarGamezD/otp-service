@@ -9,6 +9,7 @@ export interface IClient {
     tokens: number;
     tokensUsed: number;
     rateLimitPerMinute: number;
+    otpExpirationSeconds: number;
     emailTemplate: IEmailTemplate;
     whatsappTemplate: IWhatsAppTemplate;
 }

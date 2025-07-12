@@ -37,6 +37,13 @@ export class ClientController {
                     minimum: 1,
                     maximum: 100
                 },
+                otpExpirationSeconds: {
+                    type: 'number',
+                    description: 'OTP expiration time in seconds',
+                    example: 300,
+                    minimum: 60,
+                    maximum: 3600
+                },
                 emailTemplate: {
                     type: 'object',
                     properties: {
@@ -76,6 +83,8 @@ export class ClientController {
                 tokensUsed: {type: 'number'},
                 remainingTokens: {type: 'number'},
                 rateLimitPerMinute: {type: 'number'},
+                otpExpirationSeconds: {type: 'number'},
+                otpExpirationMinutes: {type: 'number'},
                 createdAt: {type: 'string', format: 'date-time'},
                 updatedAt: {type: 'string', format: 'date-time'}
             }
@@ -163,6 +172,13 @@ export class ClientController {
                     example: 10,
                     minimum: 1,
                     maximum: 100
+                },
+                otpExpirationSeconds: {
+                    type: 'number',
+                    description: 'OTP expiration time in seconds',
+                    example: 300,
+                    minimum: 60,
+                    maximum: 3600
                 },
                 emailTemplate: {
                     type: 'object',

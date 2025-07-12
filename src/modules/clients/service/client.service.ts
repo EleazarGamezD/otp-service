@@ -39,12 +39,13 @@ export class ClientService {
             apiKey,
             tokens: createRequest.tokens || 100, // Default 100 tokens
             rateLimitPerMinute: createRequest.rateLimitPerMinute || 5,
+            otpExpirationSeconds: createRequest.otpExpirationSeconds || 300, // Default 5 minutes
             emailTemplate: {
                 subject: createRequest.emailTemplate?.subject || 'Tu código de verificación',
-                body: createRequest.emailTemplate?.body || '<h2>Código de verificación</h2><p>Tu código es: <strong>{{code}}</strong></p><p>Este código expira en 15 minutos.</p>'
+                body: createRequest.emailTemplate?.body || '<h2>Código de verificación</h2><p>Tu código es: <strong>{{code}}</strong></p><p>Este código expira en {{expirationMinutes}} minutos.</p>'
             },
             whatsappTemplate: {
-                message: createRequest.whatsappTemplate?.message || 'Tu código de verificación es: {{code}}. Este código expira en 15 minutos.'
+                message: createRequest.whatsappTemplate?.message || 'Tu código de verificación es: {{code}}. Este código expira en {{expirationMinutes}} minutos.'
             }
         };
 
@@ -257,6 +258,8 @@ export class ClientService {
             tokensUsed: client.tokensUsed,
             remainingTokens: client.tokens - client.tokensUsed,
             rateLimitPerMinute: client.rateLimitPerMinute,
+            otpExpirationSeconds: client.otpExpirationSeconds,
+            otpExpirationMinutes: Math.round(client.otpExpirationSeconds / 60),
             createdAt: client.createdAt,
             updatedAt: client.updatedAt
         };

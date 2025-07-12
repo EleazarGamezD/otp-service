@@ -6,6 +6,7 @@ export interface IClient {
     tokens: number;
     tokensUsed: number;
     rateLimitPerMinute: number;
+    otpExpirationSeconds: number;
     emailTemplate: IEmailTemplate;
     whatsappTemplate: IWhatsAppTemplate;
     createdAt?: Date;
@@ -25,6 +26,7 @@ export interface IClientCreateRequest {
     companyName: string;
     tokens?: number;
     rateLimitPerMinute?: number;
+    otpExpirationSeconds?: number;
     emailTemplate?: Partial<IEmailTemplate>;
     whatsappTemplate?: Partial<IWhatsAppTemplate>;
 }
@@ -34,6 +36,7 @@ export interface IClientUpdateRequest {
     isActive?: boolean;
     tokens?: number;
     rateLimitPerMinute?: number;
+    otpExpirationSeconds?: number;
     emailTemplate?: Partial<IEmailTemplate>;
     whatsappTemplate?: Partial<IWhatsAppTemplate>;
 }
@@ -47,6 +50,8 @@ export interface IClientResponse {
     tokensUsed: number;
     remainingTokens: number;
     rateLimitPerMinute: number;
+    otpExpirationSeconds: number;
+    otpExpirationMinutes: number; // Helper field for display
     createdAt: Date;
     updatedAt: Date;
 }

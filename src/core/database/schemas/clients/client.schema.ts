@@ -30,6 +30,10 @@ export class Client extends Document {
   @Prop({default: 5, min: 1, max: 100})
   rateLimitPerMinute: number;
 
+  // OTP expiration configuration in seconds
+  @Prop({default: 300, min: 60, max: 3600}) // Default 5 minutes, min 1 minute, max 1 hour
+  otpExpirationSeconds: number;
+
   // Email template configuration
   @Prop({
     type: {
@@ -38,7 +42,7 @@ export class Client extends Document {
     },
     default: {
       subject: 'Tu código de verificación',
-      body: '<h2>Código de verificación</h2><p>Tu código es: <strong>{{code}}</strong></p><p>Este código expira en 15 minutos.</p>'
+      body: '<h2>Código de verificación</h2><p>Tu código es: <strong>{{code}}</strong></p><p>Este código expira en {{expirationMinutes}} minutos.</p>'
     }
   })
   emailTemplate: IEmailTemplate;
@@ -49,7 +53,7 @@ export class Client extends Document {
       message: {type: String, required: true}
     },
     default: {
-      message: 'Tu código de verificación es: {{code}}. Este código expira en 15 minutos.'
+      message: 'Tu código de verificación es: {{code}}. Este código expira en {{expirationMinutes}} minutos.'
     }
   })
   whatsappTemplate: IWhatsAppTemplate;
