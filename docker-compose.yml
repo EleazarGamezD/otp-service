@@ -1,16 +1,4 @@
 services:
-  app:
-    container_name: OTP-MicroService
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/otp-service
-      - REDIS_HOST=redis
-    depends_on:
-      - mongo
-      - redis
-
   mongo:
     container_name: OTP-MongoDB
     image: mongo:latest

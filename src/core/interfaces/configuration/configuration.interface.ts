@@ -1,39 +1,44 @@
 export interface IRedisKeys {
-    host: string;
-    port: number;
+    host: string | undefined;
+    port: number | undefined;
 }
 
 export interface IOtpKeys {
-    queueName: string;
-    expiration: number;
+    queueName: string | undefined;
+    expiration: number | undefined;
 }
 
 export interface IRateLimitKeys {
-    windowMs: number;
-    maxRequests: number;
+    windowMs: number | undefined;
+    maxRequests: number | undefined;
 }
 
 export interface IMailKeys {
-    serviceUrl: string;
+    from: string | undefined;
+    host: string | undefined;
+    port: number | undefined;
+    secure: boolean | undefined;
+    user: string | undefined;
+    pass: string | undefined;
 }
 
 export interface IWhatsappKeys {
-    apiUrl: string;
-    apiKey: string;
+    apiUrl: string | undefined;
+    apiKey: string | undefined;
 }
 
 export interface ISecurityKeys {
-    apiKeyHeader: string;
+    apiKeyHeader: string | undefined;
 }
 
 export interface IConfiguration {
-    port: number;
-    mongoUri: string;
-    appName: string;
-    version: string;
-    logger: string;
-    nodeEnv: string;
-    vercelDeploy: boolean;
+    port: number | undefined;
+    mongoUri: string | undefined;
+    appName: string | undefined;
+    version: string | undefined;
+    logger: string | undefined;
+    nodeEnv: string | undefined;
+    vercelDeploy: boolean | undefined;
     redisKeys: IRedisKeys;
     otpKeys: IOtpKeys;
     rateLimitKeys: IRateLimitKeys;

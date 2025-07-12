@@ -10,9 +10,9 @@ export class MailService {
     const mailConfig = this.configService.get<IConfiguration['mailKeys']>('mailKeys');
 
     console.log(`[MAIL] OTP ${code} enviado a ${to}`);
-    console.log(`[MAIL] Using service URL: ${mailConfig?.serviceUrl}`);
+    console.log(`[MAIL] Using service URL: ${mailConfig?.host}`);
 
     // Aquí implementarías la lógica real para enviar el email
-    // usando mailConfig.serviceUrl
+    // usando mailConfig.host
   }
 }

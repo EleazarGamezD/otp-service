@@ -1,33 +1,38 @@
 import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
 
 export default (): IConfiguration => ({
-    port: parseInt(process.env.PORT || '3000', 10),
-    mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/otp-service',
-    appName: process.env.APP_NAME || 'OTP Service',
-    version: process.env.VERSION || '1.0.0',
-    logger: process.env.LOGGER || 'console',
-    nodeEnv: process.env.NODE_ENV || 'development',
-    vercelDeploy: process.env.VERCEL_DEPLOY === 'true' || false,
+    port: process.env.PORT ? parseInt(process.env.PORT, 10) : undefined,
+    mongoUri: process.env.MONGO_URI,
+    appName: process.env.APP_NAME,
+    version: process.env.VERSION,
+    logger: process.env.LOGGER,
+    nodeEnv: process.env.NODE_ENV,
+    vercelDeploy: process.env.VERCEL_DEPLOY === 'true',
     redisKeys: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : undefined,
     },
     otpKeys: {
-        queueName: process.env.OTP_QUEUE_NAME || 'otp-queue',
-        expiration: parseInt(process.env.OTP_EXPIRATION || '45', 10),
+        queueName: process.env.OTP_QUEUE_NAME,
+        expiration: process.env.OTP_EXPIRATION ? parseInt(process.env.OTP_EXPIRATION, 10) : undefined,
     },
     rateLimitKeys: {
-        windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000', 10),
-        maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '5', 10),
+        windowMs: process.env.RATE_LIMIT_WINDOW_MS ? parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) : undefined,
+        maxRequests: process.env.RATE_LIMIT_MAX_REQUESTS ? parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) : undefined,
     },
     mailKeys: {
-        serviceUrl: process.env.MAIL_SERVICE_URL || 'http://localhost:3001',
+        from: process.env.MAIL_FROM,
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT ? parseInt(process.env.MAIL_PORT, 10) : undefined,
+        secure: process.env.MAIL_SECURE === 'true',
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
     },
     whatsappKeys: {
-        apiUrl: process.env.WHATSAPP_API_URL || 'http://localhost:3002',
-        apiKey: process.env.WHATSAPP_API_KEY || 'your-whatsapp-api-key',
+        apiUrl: process.env.WHATSAPP_API_URL,
+        apiKey: process.env.WHATSAPP_API_KEY,
     },
     securityKeys: {
-        apiKeyHeader: process.env.API_KEY_HEADER || 'x-api-key',
+        apiKeyHeader: process.env.API_KEY_HEADER,
     },
 });
