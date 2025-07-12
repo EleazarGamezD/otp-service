@@ -3,12 +3,14 @@ import {ConfigModule, ConfigService} from '@nestjs/config';
 import {LoggerModule} from 'nestjs-pino';
 import configuration from './core/IConfiguraion/configuration';
 import {RateLimitMiddleware} from './modules/auth/middleware/rate-limit.middleware';
+import {ClientModule} from './modules/clients/module/client.module';
 import {OtpModule} from './modules/otp/module/otp.module';
 import {SharedModule} from './modules/shared/shared.module';
 
 @Module({
   imports: [
     SharedModule,
+    ClientModule,
     OtpModule,
     ConfigModule.forRoot({
       envFilePath: '.env',

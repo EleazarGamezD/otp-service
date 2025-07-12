@@ -8,6 +8,7 @@ export interface IOtpGenerateRequest {
 export interface IOtpGenerateResponse {
     message: string;
     expiresIn: number;
+    tokensRemaining?: number;
 }
 
 export interface IOtpVerifyRequest {

@@ -16,16 +16,16 @@ export class OtpProcessor extends WorkerHost {
   }
 
   async process(job: Job): Promise<void> {
-    const {target, code, channel} = job.data;
+    const {target, code, channel, clientId, emailTemplate, whatsappTemplate} = job.data;
 
     console.log(`Processing OTP job: ${job.name}`);
-    console.log(`Sending OTP ${code} via ${channel} to ${target}`);
+    console.log(`Sending OTP ${code} via ${channel} to ${target} for client ${clientId}`);
 
     try {
       if (channel === OtpChannel.EMAIL) {
-        await this.mailService.sendOTPEmail(target, code);
+        await this.mailService.sendOTPEmail(target, code, emailTemplate);
       } else if (channel === OtpChannel.WHATSAPP) {
-        await this.whatsappService.sendOTPWhatsApp(target, code);
+        await this.whatsappService.sendOTPWhatsApp(target, code, whatsappTemplate);
       }
       console.log(`OTP sent successfully to ${target} via ${channel}`);
     } catch (error) {

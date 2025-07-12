@@ -1,8 +1,9 @@
 import {OtpChannel} from '@app/core/enums/otp/channel.enum';
+import {RequestWithClient} from '@app/core/interfaces/auth/auth.interface';
 import {IOtpGenerateRequest} from '@app/core/interfaces/otp/otp.interface';
 import {ApiKey} from '@auth/decorator/api-key.decorator';
 import {ApiKeyGuard} from '@auth/guard/api-key.guard';
-import {Body, Controller, Post, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Req, UseGuards} from '@nestjs/common';
 import {ApiBody, ApiOperation, ApiResponse, ApiSecurity, ApiTags} from '@nestjs/swagger';
 import {OtpService} from '@otp/service/otp.service';
 
@@ -53,8 +54,8 @@ export class OtpController {
   @ApiResponse({status: 400, description: 'Bad request - Invalid input'})
   @ApiResponse({status: 401, description: 'Unauthorized - Invalid API key'})
   @ApiResponse({status: 429, description: 'Too many requests - Rate limit exceeded'})
-  async sendOtp(@Body() dto: IOtpGenerateRequest, @Req() req) {
-    return this.otpService.generateOTP(dto.target, dto.channel);
+  async sendOtp(@Body() dto: IOtpGenerateRequest, @Req() req: RequestWithClient) {
+    return this.otpService.generateOTP(dto.target, dto.channel, req.client!.apiKey);
   }
 
   @Post('verify')
@@ -95,7 +96,30 @@ export class OtpController {
   })
   @ApiResponse({status: 400, description: 'Bad request - Invalid input'})
   @ApiResponse({status: 401, description: 'Unauthorized - Invalid API key'})
-  async verifyOtp(@Body() dto: {target: string; code: string}) {
-    return this.otpService.verifyOTP(dto.target, dto.code);
+  async verifyOtp(@Body() dto: {target: string; code: string}, @Req() req: RequestWithClient) {
+    return this.otpService.verifyOTP(dto.target, dto.code, req.client?.apiKey);
+  }
+
+  @Get('token-info')
+  @ApiKey()
+  @ApiOperation({
+    summary: 'Get token information',
+    description: 'Get current token usage information for the client'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Token information retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        tokens: {type: 'number', example: 100},
+        tokensUsed: {type: 'number', example: 25},
+        remainingTokens: {type: 'number', example: 75}
+      }
+    }
+  })
+  @ApiResponse({status: 401, description: 'Unauthorized - Invalid API key'})
+  async getTokenInfo(@Req() req: RequestWithClient) {
+    return this.otpService.getClientTokenInfo(req.client!.apiKey);
   }
 }

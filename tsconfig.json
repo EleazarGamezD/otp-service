@@ -31,6 +31,7 @@
       "@pipes/*": ["src/core/pipes/*"],
       "@modules/*": ["src/modules/*"],
       "@auth/*": ["src/modules/auth/*"],
+      "@clients/*": ["src/modules/clients/*"],
       "@mail/*": ["src/modules/mail/*"],
       "@otp/*": ["src/modules/otp/*"],
       "@whatsapp/*": ["src/modules/whatsapp/*"],

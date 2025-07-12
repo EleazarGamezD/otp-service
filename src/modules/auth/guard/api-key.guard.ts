@@ -26,16 +26,28 @@ export class ApiKeyGuard implements CanActivate {
 
     if (!apiKey) throw new UnauthorizedException('API Key missing');
 
-    const client = await this.apiKeyService.validateApiKey(apiKey);
-    if (!client) throw new UnauthorizedException('API Key inválida');
+    try {
+      const client = await this.apiKeyService.validateForOtpOperation(apiKey);
 
-    // Transform client document to IClient interface
-    request.client = {
-      _id: (client._id as unknown as string).toString(),
-      name: client.name,
-      apiKey: client.apiKey,
-      rateLimitPerMinute: client.rateLimitPerMinute,
-    };
-    return true;
+      // Transform client document to IClient interface
+      request.client = {
+        _id: (client as any)._id.toString(),
+        companyName: client.companyName,
+        apiKey: client.apiKey,
+        isActive: client.isActive,
+        tokens: client.tokens,
+        tokensUsed: client.tokensUsed,
+        rateLimitPerMinute: client.rateLimitPerMinute,
+        emailTemplate: client.emailTemplate,
+        whatsappTemplate: client.whatsappTemplate
+      };
+
+      return true;
+    } catch (error) {
+      if (error instanceof UnauthorizedException || error.name === 'ForbiddenException') {
+        throw error;
+      }
+      throw new UnauthorizedException('API Key validation failed');
+    }
   }
 }
