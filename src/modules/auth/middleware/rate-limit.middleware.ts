@@ -1,6 +1,6 @@
 import {HttpException, HttpStatus, Injectable, NestMiddleware} from '@nestjs/common';
 import {NextFunction, Request, Response} from 'express';
-import config from '../../../core/IConfiguraion/IConfiguration.configuration';
+import config from '../../../core/IConfiguraion/configuration';
 
 interface RequestWithClient extends Request {
   client?: any;

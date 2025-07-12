@@ -1,14 +1,14 @@
+import {ConfigurationService} from '@app/core/IConfiguraion/configuration.service';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Queue} from 'bullmq';
 import {Model} from 'mongoose';
-
 import {OTP} from '../../../core/database/schemas/otp/otp.schema';
 
 @Injectable()
 export class OtpService {
-
+  private readonly configuration = new ConfigurationService().config;
 
   constructor(
     @InjectModel(OTP.name) private otpModel: Model<OTP>,

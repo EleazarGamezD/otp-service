@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
 import {Reflector} from '@nestjs/core';
-import config from '../../../core/IConfiguraion/IConfiguration.configuration';
+import config from '../../../core/IConfiguraion/configuration';
 import {ApiKeyService} from '../service/api-key.service';
 
 @Injectable()

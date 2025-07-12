@@ -1,9 +1,9 @@
+import {AppModule} from '@app/app.module';
+import {ConfigurationService} from '@config/configuration.service';
 import {Logger, ValidationPipe} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
-import * as bodyParser from 'body-parser';
-import {AppModule} from './app.module';
-import {corsConfig} from './core/config/cors/cors.config';
-import {setupSwagger} from './core/config/swagger/swagger';
+import {setupSwagger} from '@swagger/swagger';
+import {corsConfig} from './core/cors/cors.config';
 import {AllExceptionsFilter} from './core/exceptions-filters/exception-filter';
 import {EnvValidation} from './core/validator/env.validation';
 
@@ -12,7 +12,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
-  const logger = new Logger('Buscandi');
+
+  const logger = new Logger('OTP-Service');
+  const configService = app.get(ConfigurationService);
 
   // Use global validation pipe
   app.useGlobalPipes(new ValidationPipe({
@@ -21,10 +23,6 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true,
   }));
-
-  // Increase the limit to 50mb
-  app.use(bodyParser.json({limit: '50mb'}));
-  app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
   // Enable CORS
   if (process.env.NODE_ENV === 'development') {
@@ -42,7 +40,8 @@ async function bootstrap() {
   // Configure Swagger
   setupSwagger(app);
 
-  await app.listen(process.env.PORT);
-  logger.log(`App Running on port ${process.env.PORT}`);
+  await app.listen(configService.config.port);
+  logger.log(`🚀 OTP Service running on port ${configService.config.port}`);
+  logger.log(`📚 API Documentation available at http://localhost:${configService.config.port}/api-docs`);
 }
 bootstrap();

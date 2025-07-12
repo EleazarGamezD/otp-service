@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import config from '../../../core/IConfiguraion/IConfiguration.configuration';
+import config from '../../../core/IConfiguraion/configuration';
 
 @Injectable()
 export class WhatsappService {

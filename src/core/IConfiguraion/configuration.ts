@@ -1,6 +1,11 @@
 export type IConfiguration = {
     port: number;
     mongoUri: string;
+    appName: string;
+    version: string;
+    logger: string;
+    nodeEnv: string;
+    vercelDeploy: boolean;
     redisKeys: {
         host: string;
         port: number;
@@ -28,6 +33,11 @@ export type IConfiguration = {
 export default (): IConfiguration => ({
     port: parseInt(process.env.PORT || '3000', 10),
     mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/otp-service',
+    appName: process.env.APP_NAME || 'OTP Service',
+    version: process.env.VERSION || '1.0.0',
+    logger: process.env.LOGGER || 'console',
+    nodeEnv: process.env.NODE_ENV || 'development',
+    vercelDeploy: process.env.VERCEL_DEPLOY === 'true' || false,
     redisKeys: {
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379', 10),
