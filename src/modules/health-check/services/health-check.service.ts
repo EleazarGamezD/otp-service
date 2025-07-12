@@ -1,18 +1,17 @@
-import {IConfiguration} from '@app/core/config/IConfig/configuration';
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
-import {HealthCheckService, TypeOrmHealthIndicator} from '@nestjs/terminus';
+import {HealthCheckService, MongooseHealthIndicator} from '@nestjs/terminus';
 
 @Injectable()
 export class HealthCheckServerService {
-  version = {} as IConfiguration['version'];
-constructor(
-  private health: HealthCheckService,
-  private db : TypeOrmHealthIndicator,
-  private configService: ConfigService
-) {
-  this.version = this.configService.get<IConfiguration['version']>('version');
-}
+  version: string;
+  constructor(
+    private health: HealthCheckService,
+    private db: MongooseHealthIndicator,
+    private configService: ConfigService
+  ) {
+    this.version = this.configService.get<string>('version') || '1.0.0';
+  }
 
   /**
    * Returns the health status of the server.
@@ -21,7 +20,7 @@ constructor(
    *   - serverVersion: The version of the server.
    *   - info: A message indicating the health status of the server.
    */
-  getHealth(): { status: string; serverVersion: string; info: string } {
+  getHealth(): {status: string; serverVersion: string; info: string} {
     return {
       status: 'UP',
       serverVersion: this.version,
@@ -35,16 +34,16 @@ constructor(
    */
   async checkDatabaseHealth() {
     return this.health.check([
-      () => this.db.pingCheck('databaseConnection'),
+      () => this.db.pingCheck('mongoConnection'),
     ]);
   }
 
-/**
- * Checks the health of various services including the database and server.
- * @returns An object containing the health status of the database and server.
- *   - db: Result of the database health check.
- *   - server: Current server health information.
- */
+  /**
+   * Checks the health of various services including the database and server.
+   * @returns An object containing the health status of the database and server.
+   *   - db: Result of the database health check.
+   *   - server: Current server health information.
+   */
   async servicesHealth() {
 
     const dbHealth = await this.checkDatabaseHealth();

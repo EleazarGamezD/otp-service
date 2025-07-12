@@ -1,6 +1,6 @@
 import {AppModule} from '@app/app.module';
-import {ConfigurationService} from '@config/configuration.service';
 import {Logger, ValidationPipe} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
 import {NestFactory} from '@nestjs/core';
 import {setupSwagger} from '@swagger/swagger';
 import {corsConfig} from './core/cors/cors.config';
@@ -14,7 +14,7 @@ async function bootstrap() {
   });
 
   const logger = new Logger('OTP-Service');
-  const configService = app.get(ConfigurationService);
+  const configService = app.get(ConfigService);
 
   // Use global validation pipe
   app.useGlobalPipes(new ValidationPipe({
@@ -25,14 +25,16 @@ async function bootstrap() {
   }));
 
   // Enable CORS
-  if (process.env.NODE_ENV === 'development') {
+  const nodeEnv = configService.get<string>('nodeEnv');
+  if (nodeEnv === 'development') {
     app.enableCors();
   } else {
     app.enableCors(corsConfig);
   }
 
   // Set global prefix
-  app.setGlobalPrefix(`api/${process.env.VERSION}`);
+  const version = configService.get<string>('version');
+  app.setGlobalPrefix(`api/${version}`);
 
   // Use global exception filter
   app.useGlobalFilters(new AllExceptionsFilter());
@@ -40,8 +42,9 @@ async function bootstrap() {
   // Configure Swagger
   setupSwagger(app);
 
-  await app.listen(configService.config.port);
-  logger.log(`🚀 OTP Service running on port ${configService.config.port}`);
-  logger.log(`📚 API Documentation available at http://localhost:${configService.config.port}/api-docs`);
+  const port = configService.get<number>('port') || 3000;
+  await app.listen(port);
+  logger.log(`🚀 OTP Service running on port ${port}`);
+  logger.log(`📚 API Documentation available at http://localhost:${port}/api-docs`);
 }
 bootstrap();

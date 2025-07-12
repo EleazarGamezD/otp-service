@@ -1,16 +1,17 @@
+import {IConfiguration} from '@app/core/IConfiguraion/configuration';
 import {Injectable} from '@nestjs/common';
-import config from '../../../core/IConfiguraion/configuration';
+import {ConfigService} from '@nestjs/config';
 
 @Injectable()
 export class WhatsappService {
-  private readonly configuration = config();
+  constructor(private configService: ConfigService) { }
 
   async sendOTPWhatsApp(to: string, code: string) {
-    const whatsappConfig = this.configuration.whatsappKeys;
+    const whatsappConfig = this.configService.get<IConfiguration['whatsappKeys']>('whatsappKeys');
 
     console.log(`[WHATSAPP] OTP ${code} enviado a ${to}`);
-    console.log(`[WHATSAPP] Using API URL: ${whatsappConfig.apiUrl}`);
-    console.log(`[WHATSAPP] Using API Key: ${whatsappConfig.apiKey.substring(0, 10)}...`);
+    console.log(`[WHATSAPP] Using API URL: ${whatsappConfig?.apiUrl}`);
+    console.log(`[WHATSAPP] Using API Key: ${whatsappConfig?.apiKey?.substring(0, 10)}...`);
 
     // Aquí implementarías la lógica real para enviar el WhatsApp
     // usando whatsappConfig.apiUrl y whatsappConfig.apiKey

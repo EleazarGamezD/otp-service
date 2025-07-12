@@ -1,8 +1,10 @@
-import {Module} from "@nestjs/common";
-import {MongooseModule} from '@nestjs/mongoose';
-import {OTP, OTPSchema} from '../schemas/otp/otp.schema';
+import {IConfiguration} from '@app/core/IConfiguraion/configuration';
 import {BullModule} from '@nestjs/bullmq';
+import {Module} from "@nestjs/common";
+import {ConfigModule, ConfigService} from '@nestjs/config';
+import {MongooseModule} from '@nestjs/mongoose';
 import {Client, ClientSchema} from "src/core/database/schemas/clients/client.schema";
+import {OTP, OTPSchema} from '../schemas/otp/otp.schema';
 
 export const schemas = [
     {name: OTP.name, schema: OTPSchema},
@@ -11,18 +13,38 @@ export const schemas = [
 
 @Module({
     imports: [
-        MongooseModule.forRoot(configuration.mongoUri),
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                uri: configService.get<string>('mongoUri'),
+            }),
+        }),
         MongooseModule.forFeature(schemas),
-    ],
-    BullModule.forRoot({
-        connection: {
-            host: configuration.redisKeys.host,
-            port: configuration.redisKeys.port,
-        },
-    }),
-    BullModule.registerQueue({
-        name: configuration.otpKeys.queueName
-    }),
+        BullModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => {
+                const redisConfig = configService.get<IConfiguration['redisKeys']>('redisKeys');
+                return {
+                    connection: {
+                        host: redisConfig?.host,
+                        port: redisConfig?.port,
+                    },
+                };
+            },
+        }),
+        BullModule.registerQueueAsync({
+            name: 'otp-queue',
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => {
+                const otpConfig = configService.get<IConfiguration['otpKeys']>('otpKeys');
+                return {
+                    name: otpConfig?.queueName || 'otp-queue',
+                };
+            },
+        }),
     ],
     exports: [MongooseModule, BullModule],
 })

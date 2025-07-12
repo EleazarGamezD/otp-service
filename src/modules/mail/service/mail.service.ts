@@ -1,15 +1,16 @@
+import {IConfiguration} from '@app/core/IConfiguraion/configuration';
 import {Injectable} from '@nestjs/common';
-import config from '../../../core/IConfiguraion/configuration';
+import {ConfigService} from '@nestjs/config';
 
 @Injectable()
 export class MailService {
-  private readonly configuration = config();
+  constructor(private configService: ConfigService) { }
 
   async sendOTPEmail(to: string, code: string) {
-    const mailConfig = this.configuration.mailKeys;
+    const mailConfig = this.configService.get<IConfiguration['mailKeys']>('mailKeys');
 
     console.log(`[MAIL] OTP ${code} enviado a ${to}`);
-    console.log(`[MAIL] Using service URL: ${mailConfig.serviceUrl}`);
+    console.log(`[MAIL] Using service URL: ${mailConfig?.serviceUrl}`);
 
     // Aquí implementarías la lógica real para enviar el email
     // usando mailConfig.serviceUrl

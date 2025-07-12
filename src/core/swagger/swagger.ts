@@ -1,7 +1,11 @@
 import {INestApplication} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication) {
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('port') || 3000;
+
   const config = new DocumentBuilder()
     .setTitle('OTP Service API')
     .setDescription(
@@ -18,7 +22,7 @@ export function setupSwagger(app: INestApplication) {
     .setVersion('1.0')
     .addTag('OTP', 'One-Time Password operations')
     .addTag('Authentication', 'API key validation')
-    .addServer(`http://localhost:${process.env.PORT || 3000}`, 'Local Development Server')
+    .addServer(`http://localhost:${port}`, 'Local Development Server')
     .addApiKey(
       {
         type: 'apiKey',

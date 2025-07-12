@@ -1,16 +1,14 @@
+import {IConfiguration} from '@app/core/IConfiguraion/configuration';
+import {RequestWithClient} from '@app/core/interfaces/rateLimit/request.interface';
 import {HttpException, HttpStatus, Injectable, NestMiddleware} from '@nestjs/common';
-import {NextFunction, Request, Response} from 'express';
-import config from '../../../core/IConfiguraion/configuration';
-
-interface RequestWithClient extends Request {
-  client?: any;
-}
+import {ConfigService} from '@nestjs/config';
+import {NextFunction, Response} from 'express';
 
 const requestCounts = new Map<string, {count: number; timestamp: number}>();
 
 @Injectable()
 export class RateLimitMiddleware implements NestMiddleware {
-  private readonly configuration = config();
+  constructor(private configService: ConfigService) { }
 
   use(req: RequestWithClient, res: Response, next: NextFunction) {
     const client = req.client;
@@ -18,8 +16,9 @@ export class RateLimitMiddleware implements NestMiddleware {
 
     const now = Date.now();
     const key = client.apiKey;
-    const limit = client.rateLimitPerMinute || this.configuration.rateLimitKeys.maxRequests;
-    const windowMs = this.configuration.rateLimitKeys.windowMs;
+    const rateLimitConfig = this.configService.get<IConfiguration['rateLimitKeys']>('rateLimitKeys');
+    const limit = client.rateLimitPerMinute || rateLimitConfig?.maxRequests || 5;
+    const windowMs = rateLimitConfig?.windowMs || 60000;
 
     const entry = requestCounts.get(key);
     if (!entry || now - entry.timestamp > windowMs) {
