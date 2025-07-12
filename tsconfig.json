@@ -33,7 +33,8 @@
       "@auth/*": ["src/modules/auth/*"],
       "@mail/*": ["src/modules/mail/*"],
       "@otp/*": ["src/modules/otp/*"],
-      "@whatsapp/*": ["src/modules/whatsapp/*"]
+      "@whatsapp/*": ["src/modules/whatsapp/*"],
+      "@shared/*": ["src/shared/*"]
     },
   }
 }

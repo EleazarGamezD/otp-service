@@ -13,7 +13,7 @@ import {OTP} from '../../../core/database/schemas/otp/otp.schema';
 export class OtpService {
   constructor(
     @InjectModel(OTP.name) private otpModel: Model<OTP>,
-    @InjectQueue('otp') private otpQueue: Queue,
+    @InjectQueue('otp-queue') private otpQueue: Queue,
     private configService: ConfigService,
   ) { }
 
