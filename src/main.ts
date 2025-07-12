@@ -1,4 +1,5 @@
 import {AppModule} from '@app/app.module';
+import {NodeEnvironment} from '@app/core/enums/environment/node-env.enum';
 import {Logger, ValidationPipe} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {NestFactory} from '@nestjs/core';
@@ -26,7 +27,7 @@ async function bootstrap() {
 
   // Enable CORS
   const nodeEnv = configService.get<string>('nodeEnv');
-  if (nodeEnv === 'development') {
+  if (nodeEnv === NodeEnvironment.DEVELOPMENT) {
     app.enableCors();
   } else {
     app.enableCors(corsConfig);

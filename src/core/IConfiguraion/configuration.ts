@@ -1,34 +1,4 @@
-export type IConfiguration = {
-    port: number;
-    mongoUri: string;
-    appName: string;
-    version: string;
-    logger: string;
-    nodeEnv: string;
-    vercelDeploy: boolean;
-    redisKeys: {
-        host: string;
-        port: number;
-    };
-    otpKeys: {
-        queueName: string;
-        expiration: number;
-    };
-    rateLimitKeys: {
-        windowMs: number;
-        maxRequests: number;
-    };
-    mailKeys: {
-        serviceUrl: string;
-    };
-    whatsappKeys: {
-        apiUrl: string;
-        apiKey: string;
-    };
-    securityKeys: {
-        apiKeyHeader: string;
-    };
-};
+import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
 
 export default (): IConfiguration => ({
     port: parseInt(process.env.PORT || '3000', 10),

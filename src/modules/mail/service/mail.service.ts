@@ -1,4 +1,4 @@
-import {IConfiguration} from '@app/core/IConfiguraion/configuration';
+import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 

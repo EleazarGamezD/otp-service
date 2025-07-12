@@ -1,5 +1,5 @@
-import {IConfiguration} from '@app/core/IConfiguraion/configuration';
-import {RequestWithClient} from '@app/core/interfaces/rateLimit/request.interface';
+import {RequestWithClient} from '@app/core/interfaces/auth/auth.interface';
+import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
 import {CanActivate, ExecutionContext, Injectable, UnauthorizedException} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {Reflector} from '@nestjs/core';

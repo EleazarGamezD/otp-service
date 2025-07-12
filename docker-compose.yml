@@ -1,6 +1,6 @@
-version: '3.8'
 services:
   app:
+    container_name: OTP-MicroService
     build: .
     ports:
       - "3000:3000"
@@ -12,11 +12,13 @@ services:
       - redis
 
   mongo:
-    image: mongo:6
+    container_name: OTP-MongoDB
+    image: mongo:latest
     ports:
       - "27017:27017"
 
   redis:
-    image: redis:7
+    container_name: OTP-Redis
+    image: redis:latest
     ports:
       - "6379:6379"

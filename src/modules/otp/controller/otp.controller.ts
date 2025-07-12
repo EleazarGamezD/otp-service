@@ -1,3 +1,5 @@
+import {OtpChannel} from '@app/core/enums/otp/channel.enum';
+import {IOtpGenerateRequest} from '@app/core/interfaces/otp/otp.interface';
 import {ApiKey} from '@auth/decorator/api-key.decorator';
 import {ApiKeyGuard} from '@auth/guard/api-key.guard';
 import {Body, Controller, Post, Req, UseGuards} from '@nestjs/common';
@@ -29,9 +31,9 @@ export class OtpController {
         },
         channel: {
           type: 'string',
-          enum: ['email', 'whatsapp'],
+          enum: [OtpChannel.EMAIL, OtpChannel.WHATSAPP],
           description: 'Channel to send OTP through',
-          example: 'email'
+          example: OtpChannel.EMAIL
         }
       },
       required: ['target', 'channel']
@@ -51,7 +53,7 @@ export class OtpController {
   @ApiResponse({status: 400, description: 'Bad request - Invalid input'})
   @ApiResponse({status: 401, description: 'Unauthorized - Invalid API key'})
   @ApiResponse({status: 429, description: 'Too many requests - Rate limit exceeded'})
-  async sendOtp(@Body() dto: {target: string; channel: 'email' | 'whatsapp'}, @Req() req) {
+  async sendOtp(@Body() dto: IOtpGenerateRequest, @Req() req) {
     return this.otpService.generateOTP(dto.target, dto.channel);
   }
 

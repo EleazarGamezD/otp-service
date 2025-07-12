@@ -1,5 +1,5 @@
-import {IConfiguration} from '@app/core/IConfiguraion/configuration';
-import {RequestWithClient} from '@app/core/interfaces/rateLimit/request.interface';
+import {RequestWithClient} from '@app/core/interfaces/auth/auth.interface';
+import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
 import {HttpException, HttpStatus, Injectable, NestMiddleware} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {NextFunction, Response} from 'express';

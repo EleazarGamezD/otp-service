@@ -1,4 +1,4 @@
-import {IConfiguration} from '@app/core/IConfiguraion/configuration';
+import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
 import {BullModule} from '@nestjs/bullmq';
 import {Module} from "@nestjs/common";
 import {ConfigModule, ConfigService} from '@nestjs/config';

@@ -1,4 +1,6 @@
-import {IConfiguration} from '@app/core/IConfiguraion/configuration';
+import {OtpChannel} from '@app/core/enums/otp/channel.enum';
+import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
+import {IOtpGenerateResponse, IOtpVerifyResponse} from '@app/core/interfaces/otp/otp.interface';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
@@ -15,7 +17,7 @@ export class OtpService {
     private configService: ConfigService,
   ) { }
 
-  async generateOTP(target: string, channel: 'email' | 'whatsapp') {
+  async generateOTP(target: string, channel: OtpChannel): Promise<IOtpGenerateResponse> {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const otpConfig = this.configService.get<IConfiguration['otpKeys']>('otpKeys');
     const expirationTime = otpConfig?.expiration || 45;
@@ -30,7 +32,7 @@ export class OtpService {
     };
   }
 
-  async verifyOTP(target: string, code: string) {
+  async verifyOTP(target: string, code: string): Promise<IOtpVerifyResponse> {
     const record = await this.otpModel.findOne({target, code, verified: false});
     if (!record) return {valid: false, reason: 'Invalid code'};
     if (new Date() > record.expiresAt) return {valid: false, reason: 'Expired code'};
