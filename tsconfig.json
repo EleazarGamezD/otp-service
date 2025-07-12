@@ -16,6 +16,24 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@app/*": ["src/*"],
+      "@core/*": ["src/core/*"],
+      "@config/*": ["src/core/IConfiguraion/*"],
+      "@database/*": ["src/core/database/*"],
+      "@schemas/*": ["src/core/database/schemas/*"],
+      "@enums/*": ["src/core/enums/*"],
+      "@swagger/*": ["src/core/swagger/*"],
+      "@cors/*": ["src/core/cors/*"],
+      "@interceptors/*": ["src/core/interceptors/*"],
+      "@filters/*": ["src/core/filters/*"],
+      "@pipes/*": ["src/core/pipes/*"],
+      "@modules/*": ["src/modules/*"],
+      "@auth/*": ["src/modules/auth/*"],
+      "@mail/*": ["src/modules/mail/*"],
+      "@otp/*": ["src/modules/otp/*"],
+      "@whatsapp/*": ["src/modules/whatsapp/*"]
+    },
   }
 }
