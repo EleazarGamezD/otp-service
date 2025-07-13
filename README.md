@@ -53,12 +53,17 @@ cp .env.example .env
 
 # Configure your environment variables
 # Edit .env with your database and service credentials
+# See the Configuration Guide for detailed setup instructions
 
 # Start in development mode
 npm run start:dev
 ```
 
 ### Environment Variables
+
+For detailed configuration instructions and all available environment variables, see the **[Configuration Guide](src/core/docs/CONFIGURACION.md)**.
+
+Basic required variables:
 
 ```bash
 # Database
@@ -68,25 +73,53 @@ MONGO_URI=mongodb://localhost:27017/otp-service
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
-# JWT
-JWT_SECRET=your-secret-key
-JWT_EXPIRES_IN=24h
-
 # Email Service (Resend)
 RESEND_API_KEY=your-resend-api-key
+MAIL_FROM=your-email@example.com
 
 # WhatsApp API
 WHATSAPP_API_URL=your-whatsapp-api-url
-WHATSAPP_API_TOKEN=your-whatsapp-token
+WHATSAPP_API_KEY=your-whatsapp-api-key
 
 # OTP Configuration
 OTP_EXPIRATION=300
+OTP_QUEUE_NAME=otp-queue
+
+# Rate Limiting
 RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX_REQUESTS=5
 
 # Application
 PORT=3000
 NODE_ENV=development
+APP_NAME=OTP Service
+VERSION=1.0.0
 ```
+
+### ⚙️ Configuration Management
+
+This project uses a sophisticated configuration system with TypeScript interfaces for type safety. The configuration is organized by functionality and supports both direct imports and NestJS ConfigService.
+
+#### Configuration Structure
+
+```typescript
+// Example: Direct import usage
+import config from '@config/configuration';
+
+const configuration = config();
+const redisHost = configuration.redisKeys.host;
+const otpExpiration = configuration.otpKeys.expiration;
+```
+
+#### Key Features
+
+- **Type Safety**: Full TypeScript support with interfaces
+- **Organized Structure**: Variables grouped by functionality (redis, mail, otp, etc.)
+- **Flexible Access**: Use direct imports or ConfigService
+- **Path Aliases**: Clean imports with `@config/*`, `@otp/*`, etc.
+- **Environment Driven**: All configuration from `.env` file
+
+For complete configuration details, TypeScript interfaces, usage examples, and best practices, see the **[Configuration Guide](src/core/docs/CONFIGURATION.md)**.
 
 ## 📖 Documentation
 
@@ -96,6 +129,7 @@ NODE_ENV=development
 - 🔐 **[Authentication Guide](src/core/docs/authentication.md)** - Customer and admin authentication
 - 📋 **[Project Management](src/core/docs/project-management.md)** - Creating and managing projects
 - 📱 **[OTP Operations](src/core/docs/otp-operations.md)** - Sending and verifying OTPs
+- ⚙️ **[Configuration Guide](src/core/docs/configuration.md)** - Complete configuration setup and environment variables
 
 ### Interactive Documentation
 
