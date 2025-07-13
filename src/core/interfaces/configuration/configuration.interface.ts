@@ -15,6 +15,8 @@ export interface IRateLimitKeys {
 
 export interface IMailKeys {
     from: string | undefined;
+    resendApiKey: string | undefined;
+    // Legacy SES config
     host: string | undefined;
     port: number | undefined;
     secure: boolean | undefined;

@@ -22,6 +22,8 @@ export default (): IConfiguration => ({
     },
     mailKeys: {
         from: process.env.MAIL_FROM,
+        resendApiKey: process.env.RESEND_API_KEY,
+        // Legacy SES config (backup)
         host: process.env.MAIL_HOST,
         port: process.env.MAIL_PORT ? parseInt(process.env.MAIL_PORT, 10) : undefined,
         secure: process.env.MAIL_SECURE === 'true',
