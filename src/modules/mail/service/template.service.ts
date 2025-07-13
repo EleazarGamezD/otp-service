@@ -27,13 +27,30 @@ export class TemplateService {
    */
   private loadTemplates() {
     try {
-      const templatePath = path.join(__dirname, '..', 'template', 'otp-email.hbs');
-      const templateSource = fs.readFileSync(templatePath, 'utf8');
-      this.emailTemplate = Handlebars.compile(templateSource);
+      // Try to load from dist first (production), then fallback to src (development)
+      const distPath = path.join(__dirname, '..', 'template', 'otp-email.hbs');
+      const srcPath = path.join(process.cwd(), 'src', 'modules', 'mail', 'template', 'otp-email.hbs');
 
+      let templatePath: string;
+      let templateSource: string;
+
+      try {
+        // Try dist path first
+        templateSource = fs.readFileSync(distPath, 'utf8');
+        templatePath = distPath;
+        this.logger.debug(`Template loaded from dist: ${templatePath}`);
+      } catch {
+        // Fallback to src path for development
+        templateSource = fs.readFileSync(srcPath, 'utf8');
+        templatePath = srcPath;
+        this.logger.debug(`Template loaded from src: ${templatePath}`);
+      }
+
+      this.emailTemplate = Handlebars.compile(templateSource);
       this.logger.log('Email templates loaded successfully');
     } catch (error) {
       this.logger.error('Failed to load email templates:', error);
+      this.logger.error(`Available paths checked: dist and src directories`);
       throw new Error('Template loading failed');
     }
   }

@@ -3,7 +3,7 @@ import {IEmailTemplate} from '@app/core/interfaces/projects/project.interface';
 import {Injectable, Logger} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {Resend} from 'resend';
-import {OtpEmailTemplateData, TemplateService} from '../template.service';
+import {OtpEmailTemplateData, TemplateService} from './template.service';
 
 export interface SendOtpEmailOptions {
     to: string;
@@ -42,6 +42,8 @@ export class MailService {
      * Send OTP email using the new template system (recommended)
      */
     async sendOTPEmailWithTemplate(options: SendOtpEmailOptions) {
+        const {to} = options; // Extract 'to' at the start for error handling
+
         try {
             const mailConfig = this.configService.get<IConfiguration['mailKeys']>('mailKeys');
 
@@ -50,7 +52,6 @@ export class MailService {
             }
 
             const {
-                to,
                 code,
                 projectName,
                 expirationMinutes = 5,
