@@ -1,5 +1,5 @@
-import {IEmailTemplate} from '@app/core/interfaces/clients/client.interface';
 import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
+import {IEmailTemplate} from '@app/core/interfaces/projects/project.interface';
 import {Injectable, Logger} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {Resend} from 'resend';

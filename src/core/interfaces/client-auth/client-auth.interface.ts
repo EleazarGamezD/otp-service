@@ -18,10 +18,6 @@ export interface IClientAuthResponse {
         role: string;
         apiKey: string;
         isActive: boolean;
-        hasUnlimitedTokens: boolean;
-        isProduction: boolean;
-        tokens: number;
-        tokensUsed: number;
     };
 }
 
@@ -37,12 +33,11 @@ export interface IClientProfileResponse {
     role: string;
     apiKey: string;
     isActive: boolean;
-    hasUnlimitedTokens: boolean;
-    isProduction: boolean;
-    tokens: number;
-    tokensUsed: number;
-    rateLimitPerMinute: number;
-    otpExpirationSeconds: number;
     createdAt: Date;
     updatedAt: Date;
+    // Estadísticas agregadas de proyectos
+    totalProjects?: number;
+    activeProjects?: number;
+    totalTokensAcrossProjects?: number;
+    totalTokensUsedAcrossProjects?: number;
 }

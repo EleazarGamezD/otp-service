@@ -1,5 +1,5 @@
-import {IWhatsAppTemplate} from '@app/core/interfaces/clients/client.interface';
 import {IConfiguration} from '@app/core/interfaces/configuration/configuration.interface';
+import {IWhatsAppTemplate} from '@app/core/interfaces/projects/project.interface';
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 

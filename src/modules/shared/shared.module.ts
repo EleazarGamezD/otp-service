@@ -8,6 +8,7 @@ import {ClientModule} from "../clients/module/client.module";
 import {HealthCheckModule} from "../health-check/health-check.module";
 import {MailerModule} from "../mail/module/mailer.module";
 import {OtpModule} from "../otp/module/otp.module";
+import {ProjectModule} from "../projects/module/project.module";
 import {WhatsappModule} from "../whatsapp/module/whatsapp.module";
 
 const coreModules = [
@@ -17,6 +18,7 @@ const coreModules = [
     forwardRef(() => ClientAuthModule),
     forwardRef(() => AuthModule),
     forwardRef(() => ClientModule),
+    forwardRef(() => ProjectModule),
     forwardRef(() => MailerModule),
     forwardRef(() => OtpModule),
     forwardRef(() => WhatsappModule)

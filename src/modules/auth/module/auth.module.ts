@@ -1,11 +1,15 @@
 import {Module, forwardRef} from "@nestjs/common";
+import {ProjectModule} from "../../projects/module/project.module";
 import {SharedModule} from "../../shared/shared.module";
+import {ApiKeyService} from "../api-key.service";
 import {ApiKeyGuard} from "../guard/api-key.guard";
 import {RateLimitMiddleware} from "../middleware/rate-limit.middleware";
-import {ApiKeyService} from "../service/api-key.service";
 
 @Module({
-    imports: [forwardRef(() => SharedModule)],
+    imports: [
+        forwardRef(() => SharedModule),
+        forwardRef(() => ProjectModule)
+    ],
     providers: [ApiKeyService, ApiKeyGuard, RateLimitMiddleware],
     exports: [ApiKeyService, ApiKeyGuard, RateLimitMiddleware],
 })

@@ -6,7 +6,7 @@ import {WhatsappService} from '@whatsapp/service/whatsapp.service';
 import {Job} from 'bullmq';
 
 @Injectable()
-@Processor('otp-queue')
+@Processor('otp')
 export class OtpProcessor extends WorkerHost {
   constructor(
     private readonly mailService: MailService,

@@ -29,12 +29,6 @@ export class ClientController {
                     role: {type: 'string', enum: ['admin', 'customer']},
                     apiKey: {type: 'string'},
                     isActive: {type: 'boolean'},
-                    tokens: {type: 'number'},
-                    tokensUsed: {type: 'number'},
-                    remainingTokens: {type: 'number'},
-                    hasUnlimitedTokens: {type: 'boolean'},
-                    isProduction: {type: 'boolean'},
-                    rateLimitPerMinute: {type: 'number'},
                     createdAt: {type: 'string', format: 'date-time'},
                     updatedAt: {type: 'string', format: 'date-time'}
                 }
@@ -83,49 +77,6 @@ export class ClientController {
                     type: 'boolean',
                     description: 'Customer active status',
                     example: true
-                },
-                tokens: {
-                    type: 'number',
-                    description: 'Total token allocation',
-                    example: 200,
-                    minimum: 0
-                },
-                hasUnlimitedTokens: {
-                    type: 'boolean',
-                    description: 'Whether customer has unlimited tokens',
-                    example: false
-                },
-                isProduction: {
-                    type: 'boolean',
-                    description: 'Whether customer is in production mode',
-                    example: false
-                },
-                rateLimitPerMinute: {
-                    type: 'number',
-                    description: 'Rate limit per minute',
-                    example: 10,
-                    minimum: 1,
-                    maximum: 100
-                },
-                otpExpirationSeconds: {
-                    type: 'number',
-                    description: 'OTP expiration time in seconds',
-                    example: 300,
-                    minimum: 60,
-                    maximum: 3600
-                },
-                emailTemplate: {
-                    type: 'object',
-                    properties: {
-                        subject: {type: 'string'},
-                        body: {type: 'string'}
-                    }
-                },
-                whatsappTemplate: {
-                    type: 'object',
-                    properties: {
-                        message: {type: 'string'}
-                    }
                 }
             }
         }
@@ -165,86 +116,55 @@ export class ClientController {
     @Patch(':id/add-tokens')
     @ApiOperation({
         summary: 'Add tokens to customer',
-        description: 'Add tokens to customer account'
+        description: 'Add tokens to customer account (now handled at project level)'
     })
-    @ApiBody({
-        description: 'Tokens to add',
-        schema: {
-            type: 'object',
-            required: ['tokens'],
-            properties: {
-                tokens: {
-                    type: 'number',
-                    description: 'Number of tokens to add',
-                    example: 50,
-                    minimum: 1
-                }
-            }
-        }
+    @ApiResponse({
+        status: 501,
+        description: 'This functionality has been moved to project management'
     })
-    @ApiResponse({status: 200, description: 'Tokens added successfully'})
-    @ApiResponse({status: 404, description: 'Customer not found'})
     async addTokens(
         @Param('id') id: string,
         @Body() body: {tokens: number}
-    ): Promise<IClientResponse> {
-        return this.clientService.addTokens(id, body.tokens);
+    ): Promise<{message: string}> {
+        return {
+            message: 'Token management is now handled at the project level. Please use the project management endpoints.'
+        };
     }
 
     @Patch(':id/unlimited-tokens')
     @ApiOperation({
         summary: 'Toggle unlimited tokens',
-        description: 'Enable or disable unlimited tokens for a customer'
+        description: 'Enable or disable unlimited tokens for a customer (now handled at project level)'
     })
-    @ApiBody({
-        description: 'Unlimited tokens setting',
-        schema: {
-            type: 'object',
-            required: ['hasUnlimitedTokens'],
-            properties: {
-                hasUnlimitedTokens: {
-                    type: 'boolean',
-                    description: 'Whether customer should have unlimited tokens',
-                    example: true
-                }
-            }
-        }
+    @ApiResponse({
+        status: 501,
+        description: 'This functionality has been moved to project management'
     })
-    @ApiResponse({status: 200, description: 'Unlimited tokens setting updated successfully'})
-    @ApiResponse({status: 404, description: 'Customer not found'})
     async toggleUnlimitedTokens(
         @Param('id') id: string,
         @Body() body: {hasUnlimitedTokens: boolean}
-    ): Promise<IClientResponse> {
-        return this.clientService.updateClient(id, {hasUnlimitedTokens: body.hasUnlimitedTokens});
+    ): Promise<{message: string}> {
+        return {
+            message: 'Unlimited tokens are now managed at the project level. Please use the project management endpoints.'
+        };
     }
 
     @Patch(':id/production')
     @ApiOperation({
         summary: 'Promote to production',
-        description: 'Promote customer to production environment'
+        description: 'Promote customer to production environment (now handled at project level)'
     })
-    @ApiBody({
-        description: 'Production setting',
-        schema: {
-            type: 'object',
-            required: ['isProduction'],
-            properties: {
-                isProduction: {
-                    type: 'boolean',
-                    description: 'Whether customer should be in production mode',
-                    example: true
-                }
-            }
-        }
+    @ApiResponse({
+        status: 501,
+        description: 'This functionality has been moved to project management'
     })
-    @ApiResponse({status: 200, description: 'Production status updated successfully'})
-    @ApiResponse({status: 404, description: 'Customer not found'})
     async toggleProduction(
         @Param('id') id: string,
         @Body() body: {isProduction: boolean}
-    ): Promise<IClientResponse> {
-        return this.clientService.updateClient(id, {isProduction: body.isProduction});
+    ): Promise<{message: string}> {
+        return {
+            message: 'Production promotion is now managed at the project level. Please use the project management endpoints.'
+        };
     }
 
     @Post(':id/regenerate-api-key')

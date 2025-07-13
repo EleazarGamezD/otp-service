@@ -1,17 +1,20 @@
 import {IClientAuthResponse, IClientChangePasswordRequest, IClientLoginRequest, IClientProfileResponse, IClientRegisterRequest} from '@app/core/interfaces/client-auth/client-auth.interface';
-import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
+import {ConflictException, Inject, Injectable, UnauthorizedException, forwardRef} from '@nestjs/common';
 import {JwtService} from '@nestjs/jwt';
 import {InjectModel} from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 import {randomBytes} from 'crypto';
 import {Model} from 'mongoose';
 import {Client} from '../../../core/database/schemas/clients/client.schema';
+import {ProjectService} from '../../projects/service/project.service';
 
 @Injectable()
 export class ClientAuthService {
     constructor(
         @InjectModel(Client.name) private clientModel: Model<Client>,
         private jwtService: JwtService,
+        @Inject(forwardRef(() => ProjectService))
+        private projectService: ProjectService,
     ) { }
 
     /**
@@ -94,11 +97,7 @@ export class ClientAuthService {
             email: client.email,
             role: client.role,
             apiKey: client.apiKey,
-            isActive: client.isActive,
-            hasUnlimitedTokens: client.hasUnlimitedTokens,
-            isProduction: client.isProduction,
-            tokens: client.tokens,
-            tokensUsed: client.tokensUsed,
+            isActive: client.isActive
         };
     }
 
@@ -133,27 +132,14 @@ export class ClientAuthService {
         // Generate test API key
         const apiKey = this.generateTestApiKey();
 
-        // Create new client with 20 test tokens
+        // Create new client
         const newClient = new this.clientModel({
             companyName: registerRequest.companyName,
             email: registerRequest.email.toLowerCase(),
             password: hashedPassword,
             role: 'customer',
             apiKey: apiKey,
-            isActive: true,
-            hasUnlimitedTokens: false,
-            isProduction: false,
-            tokens: 20, // 20 tokens de prueba
-            tokensUsed: 0,
-            rateLimitPerMinute: 5,
-            otpExpirationSeconds: 300,
-            emailTemplate: {
-                subject: 'Tu código de verificación',
-                body: '<h2>Código de verificación</h2><p>Tu código es: <strong>{{code}}</strong></p><p>Este código expira en {{expirationMinutes}} minutos.</p>'
-            },
-            whatsappTemplate: {
-                message: 'Tu código de verificación es: {{code}}. Este código expira en {{expirationMinutes}} minutos.'
-            }
+            isActive: true
         });
 
         const savedClient = await newClient.save();
@@ -211,6 +197,12 @@ export class ClientAuthService {
             throw new UnauthorizedException('Cliente no encontrado');
         }
 
+        // Obtener estadísticas de proyectos
+        const projects = await this.projectService.getProjectsByClientId(client._id as any);
+        const activeProjects = projects.filter(p => p.isActive);
+        const totalTokens = projects.reduce((sum, p) => sum + p.tokens, 0);
+        const totalTokensUsed = projects.reduce((sum, p) => sum + p.tokensUsed, 0);
+
         return {
             id: (client._id as any).toString(),
             companyName: client.companyName,
@@ -218,14 +210,12 @@ export class ClientAuthService {
             role: client.role,
             apiKey: client.apiKey,
             isActive: client.isActive,
-            hasUnlimitedTokens: client.hasUnlimitedTokens,
-            isProduction: client.isProduction,
-            tokens: client.tokens,
-            tokensUsed: client.tokensUsed,
-            rateLimitPerMinute: client.rateLimitPerMinute,
-            otpExpirationSeconds: client.otpExpirationSeconds,
             createdAt: client.createdAt,
             updatedAt: client.updatedAt,
+            totalProjects: projects.length,
+            activeProjects: activeProjects.length,
+            totalTokensAcrossProjects: totalTokens,
+            totalTokensUsedAcrossProjects: totalTokensUsed,
         };
     }
 

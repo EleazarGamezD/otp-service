@@ -1,15 +1,19 @@
 import {BullModule} from "@nestjs/bullmq";
 import {Module, forwardRef} from "@nestjs/common";
+import {AuthModule} from "../../auth/module/auth.module";
+import {ProjectModule} from "../../projects/module/project.module";
 import {SharedModule} from "../../shared/shared.module";
 import {OtpController} from "../controller/otp.controller";
+import {OtpService} from "../otp.service";
 import {OtpProcessor} from "../processor/otp.processor";
-import {OtpService} from "../service/otp.service";
 
 @Module({
     imports: [
         forwardRef(() => SharedModule),
+        forwardRef(() => ProjectModule),
+        forwardRef(() => AuthModule),
         BullModule.registerQueue({
-            name: 'otp-queue',
+            name: 'otp',
         }),
     ],
     controllers: [OtpController],

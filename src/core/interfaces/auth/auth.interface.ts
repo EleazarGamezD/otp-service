@@ -1,5 +1,5 @@
 import {Request} from 'express';
-import {IEmailTemplate, IWhatsAppTemplate} from '../clients/client.interface';
+import {IEmailTemplate, IWhatsAppTemplate} from '../projects/project.interface';
 
 export interface IClient {
     _id: string;
