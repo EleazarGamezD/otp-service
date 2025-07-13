@@ -1,12 +1,12 @@
 import {InjectQueue} from '@nestjs/bullmq';
-import {Injectable, BadRequestException, NotFoundException, Inject, forwardRef} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Queue} from 'bullmq';
 import {Model} from 'mongoose';
 
 import {OTP} from '../../core/database/schemas/otp/otp.schema';
-import {ProjectService} from '../projects/service/project.service';
 import configuration from '../../core/IConfiguraion/configuration';
+import {ProjectService} from '../projects/service/project.service';
 
 @Injectable()
 export class OtpService {
@@ -15,7 +15,7 @@ export class OtpService {
   constructor(
     @InjectModel(OTP.name) private otpModel: Model<OTP>,
     @InjectQueue('otp') private otpQueue: Queue,
-    @Inject(forwardRef(() => ProjectService))
+
     private projectService: ProjectService,
   ) { }
 
@@ -23,15 +23,15 @@ export class OtpService {
    * Generate OTP for a specific project
    */
   async generateOTP(
-    projectId: string, 
-    target: string, 
+    projectId: string,
+    target: string,
     channel: 'email' | 'whatsapp',
     recordId?: string,
     countryCode?: string
   ) {
     // Verify project exists and is active
     const project = await this.projectService.getProjectByProjectId(projectId);
-    
+
     if (!project.isActive) {
       throw new BadRequestException('Project is inactive');
     }
@@ -100,7 +100,7 @@ export class OtpService {
     }
 
     const record = await this.otpModel.findOne(query);
-    
+
     if (!record) {
       return {
         valid: false,
@@ -140,7 +140,7 @@ export class OtpService {
       dateTo?: Date;
     }
   ) {
-    const query: any = { projectId };
+    const query: any = {projectId};
 
     if (filters) {
       if (filters.channel) query.channel = filters.channel;
@@ -153,11 +153,11 @@ export class OtpService {
     }
 
     const skip = (page - 1) * limit;
-    
+
     const [records, total] = await Promise.all([
       this.otpModel
         .find(query)
-        .sort({ createdAt: -1 })
+        .sort({createdAt: -1})
         .skip(skip)
         .limit(limit)
         .select('-code') // Don't return actual codes for security
@@ -180,8 +180,8 @@ export class OtpService {
    * Get OTP statistics for a project
    */
   async getOTPStats(projectId: string, dateFrom?: Date, dateTo?: Date) {
-    const query: any = { projectId };
-    
+    const query: any = {projectId};
+
     if (dateFrom || dateTo) {
       query.createdAt = {};
       if (dateFrom) query.createdAt.$gte = dateFrom;
@@ -190,10 +190,10 @@ export class OtpService {
 
     const [total, verified, byChannel] = await Promise.all([
       this.otpModel.countDocuments(query),
-      this.otpModel.countDocuments({ ...query, verified: true }),
+      this.otpModel.countDocuments({...query, verified: true}),
       this.otpModel.aggregate([
-        { $match: query },
-        { $group: { _id: '$channel', count: { $sum: 1 } } }
+        {$match: query},
+        {$group: {_id: '$channel', count: {$sum: 1}}}
       ])
     ]);
 
@@ -214,7 +214,7 @@ export class OtpService {
    */
   async cleanupExpiredOTPs(projectId?: string) {
     const query: any = {
-      expiresAt: { $lt: new Date() },
+      expiresAt: {$lt: new Date()},
       verified: false
     };
 

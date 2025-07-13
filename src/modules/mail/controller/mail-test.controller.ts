@@ -1,4 +1,4 @@
-import {Body, Controller, Post} from '@nestjs/common';
+import {Body, Controller, Logger, Post} from '@nestjs/common';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {AdminAuth} from '../../admin-auth/decorator/admin-auth.decorator';
 import {MailService} from '../service/mail.service';
@@ -7,6 +7,8 @@ import {MailService} from '../service/mail.service';
 @Controller('mail-test')
 @AdminAuth()
 export class MailTestController {
+    private readonly logger = new Logger(MailTestController.name);
+
     constructor(private readonly mailService: MailService) { }
 
     @Post('send-test')
@@ -54,7 +56,7 @@ export class MailTestController {
                 provider: 'Resend'
             };
         } catch (error) {
-            console.error('❌ Email Test Error:', error);
+            this.logger.error('Email test error:', error);
 
             return {
                 success: false,
@@ -139,5 +141,146 @@ export class MailTestController {
                 error: error.name
             };
         }
+    }
+
+    @Post('send-otp-template-test')
+    @ApiOperation({
+        summary: 'Send OTP test email with new template system',
+        description: 'Send an OTP test email using the new Handlebars template system'
+    })
+    @ApiBody({
+        description: 'OTP template test email request',
+        schema: {
+            type: 'object',
+            required: ['to', 'code', 'projectName'],
+            properties: {
+                to: {
+                    type: 'string',
+                    format: 'email',
+                    description: 'Email address to send OTP to',
+                    example: 'test@example.com'
+                },
+                code: {
+                    type: 'string',
+                    description: 'OTP code to send',
+                    example: '123456'
+                },
+                projectName: {
+                    type: 'string',
+                    description: 'Name of the project',
+                    example: 'My Awesome App'
+                },
+                expirationMinutes: {
+                    type: 'number',
+                    description: 'Code expiration time in minutes',
+                    example: 5,
+                    default: 5
+                },
+                customMessage: {
+                    type: 'string',
+                    description: 'Custom message to include in email (optional)',
+                    example: 'Welcome to our platform! Please verify your email.'
+                },
+                logoUrl: {
+                    type: 'string',
+                    description: 'URL to project logo (optional)',
+                    example: 'https://example.com/logo.png'
+                },
+                footerText: {
+                    type: 'string',
+                    description: 'Custom footer text (optional)',
+                    example: 'Thank you for using our service!'
+                },
+                contactInfo: {
+                    type: 'string',
+                    description: 'Contact information for support (optional)',
+                    example: 'support@example.com | +1 (555) 123-4567'
+                }
+            }
+        }
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'OTP email sent successfully',
+        schema: {
+            type: 'object',
+            properties: {
+                success: {type: 'boolean'},
+                message: {type: 'string'},
+                messageId: {type: 'string'},
+                templateData: {type: 'object'}
+            }
+        }
+    })
+    @ApiResponse({status: 400, description: 'Invalid request data'})
+    @ApiResponse({status: 500, description: 'Email service error'})
+    async sendOTPTemplateTestEmail(@Body() body: {
+        to: string;
+        code: string;
+        projectName: string;
+        expirationMinutes?: number;
+        customMessage?: string;
+        logoUrl?: string;
+        footerText?: string;
+        contactInfo?: string;
+    }) {
+        try {
+            const result = await this.mailService.sendOTPEmailWithTemplate(body);
+
+            return {
+                success: true,
+                message: 'OTP test email sent successfully with new template system',
+                messageId: result.data?.id,
+                templateData: {
+                    projectName: body.projectName,
+                    otpCode: body.code,
+                    expirationTime: `${body.expirationMinutes || 5} minutes`,
+                    customMessage: body.customMessage || null,
+                    logoUrl: body.logoUrl || null,
+                    footerText: body.footerText || null,
+                    contactInfo: body.contactInfo || null
+                }
+            };
+        } catch (error) {
+            this.logger.error('Failed to send OTP template test email:', error);
+            return {
+                success: false,
+                message: error.message || 'Failed to send OTP template test email',
+                error: error.name
+            };
+        }
+    }
+
+    @Post('template-structure')
+    @ApiOperation({
+        summary: 'Get email template structure',
+        description: 'Get the data structure required for the email template'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Template structure retrieved successfully',
+        schema: {
+            type: 'object',
+            properties: {
+                templateStructure: {type: 'object'},
+                example: {type: 'object'}
+            }
+        }
+    })
+    async getTemplateStructure() {
+        const structure = this.mailService.getTemplateStructure();
+
+        return {
+            templateStructure: structure,
+            example: {
+                projectName: 'My Awesome App',
+                otpCode: '123456',
+                expirationTime: '5 minutes',
+                customMessage: 'Welcome to our platform! Please verify your email with the code above.',
+                logoUrl: 'https://example.com/logo.png',
+                footerText: 'Thank you for using our service!',
+                contactInfo: 'support@example.com | +1 (555) 123-4567'
+            }
+        };
     }
 }

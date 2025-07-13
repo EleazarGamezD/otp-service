@@ -13,16 +13,16 @@ export interface IWhatsAppTemplate {
 @Schema({timestamps: true})
 export class Project extends Document {
     @Prop({required: true, unique: true, index: true})
-    projectId: string; // ID público del proyecto (ej: PRJ_abc123def456)
+    projectId: string; // Public project ID (e.g: PRJ_abc123def456)
 
     @Prop({required: true, type: Types.ObjectId, ref: 'Client', index: true})
-    clientId: Types.ObjectId; // Referencia al cliente propietario
+    clientId: Types.ObjectId; // Reference to the owner client
 
     @Prop({required: true, trim: true})
-    name: string; // Nombre del proyecto
+    name: string; // Project name
 
     @Prop({trim: true})
-    description?: string; // Descripción opcional del proyecto
+    description?: string; // Optional project description
 
     @Prop({required: true, default: true})
     isActive: boolean;

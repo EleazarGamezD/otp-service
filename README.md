@@ -1,99 +1,252 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🔐 OTP Service - Multi-Project Architecture
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A robust, scalable OTP (One-Time Password) service built with NestJS that supports multi-project management, allowing clients to manage multiple independent projects with their own tokens, settings, and templates.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ✨ Features
 
-## Description
+- 🏢 **Multi-Project Management**: Each client can create and manage multiple projects
+- 🔑 **Dual Authentication**: JWT for dashboard access, API keys for OTP operations
+- 📧 **Multi-Channel Support**: Email and WhatsApp OTP delivery
+- 🎨 **Custom Templates**: Configurable email and WhatsApp message templates per project
+- 🚀 **Production Ready**: Environment flags, rate limiting, and comprehensive logging
+- 📊 **Analytics**: Detailed statistics and reporting for each project
+- 🔒 **Security**: Token-based authentication with project-scoped access
+- ⚡ **High Performance**: Redis-backed queues and MongoDB storage
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗️ Architecture
 
-## Project setup
+The service follows a hierarchical structure:
 
-```bash
-$ yarn install
+```
+Client (User Account)
+├── Project 1 (Independent tokens, templates, settings)
+│   ├── OTP Records
+│   └── Analytics
+├── Project 2
+│   ├── OTP Records
+│   └── Analytics
+└── Project N...
 ```
 
-## Compile and run the project
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js (v18+)
+- MongoDB
+- Redis
+- Email service (Resend)
+- WhatsApp API credentials
+
+### Installation
 
 ```bash
-# development
-$ yarn run start
+# Clone the repository
+git clone <repository-url>
+cd otp-service
 
-# watch mode
-$ yarn run start:dev
+# Install dependencies
+npm install
 
-# production mode
-$ yarn run start:prod
+# Copy environment file
+cp .env.example .env
+
+# Configure your environment variables
+# Edit .env with your database and service credentials
+
+# Start in development mode
+npm run start:dev
 ```
 
-## Run tests
+### Environment Variables
 
 ```bash
-# unit tests
-$ yarn run test
+# Database
+MONGO_URI=mongodb://localhost:27017/otp-service
 
-# e2e tests
-$ yarn run test:e2e
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
 
-# test coverage
-$ yarn run test:cov
+# JWT
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=24h
+
+# Email Service (Resend)
+RESEND_API_KEY=your-resend-api-key
+
+# WhatsApp API
+WHATSAPP_API_URL=your-whatsapp-api-url
+WHATSAPP_API_TOKEN=your-whatsapp-token
+
+# OTP Configuration
+OTP_EXPIRATION=300
+RATE_LIMIT_WINDOW_MS=60000
+
+# Application
+PORT=3000
+NODE_ENV=development
 ```
 
-## Deployment
+## 📖 Documentation
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### API Documentation
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- 📚 **[API Overview](src/core/docs/api-overview.md)** - Complete service overview and quick start
+- 🔐 **[Authentication Guide](src/core/docs/authentication.md)** - Customer and admin authentication
+- 📋 **[Project Management](src/core/docs/project-management.md)** - Creating and managing projects
+- 📱 **[OTP Operations](src/core/docs/otp-operations.md)** - Sending and verifying OTPs
+
+### Interactive Documentation
+
+- 🌐 **Public API Docs**: `http://localhost:3000/api-docs`
+- 🛠️ **Admin Panel Docs**: `http://localhost:3000/admin-docs`
+
+## 💻 Usage Examples
+
+### 1. Register a Customer
 
 ```bash
-$ yarn install -g mau
-$ mau deploy
+curl -X POST http://localhost:3000/api/v1/auth/customer/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "securePassword123",
+    "companyName": "My Company"
+  }'
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 2. Create a Project
 
-## Resources
+```bash
+curl -X POST http://localhost:3000/api/v1/projects \
+  -H "Authorization: Bearer <jwt_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production API",
+    "description": "Main production OTP service"
+  }'
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 3. Send OTP
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+curl -X POST http://localhost:3000/api/v1/otp/send \
+  -H "x-api-key: <your_api_key>" \
+  -H "x-project-id: <project_id>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "target": "user@example.com",
+    "channel": "email"
+  }'
+```
 
-## Support
+### 4. Verify OTP
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+curl -X POST http://localhost:3000/api/v1/otp/verify \
+  -H "x-api-key: <your_api_key>" \
+  -H "x-project-id: <project_id>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "target": "user@example.com",
+    "code": "123456"
+  }'
+```
 
-## Stay in touch
+## 🧪 Testing
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+# Unit tests
+npm run test
 
-## License
+# End-to-end tests
+npm run test:e2e
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Test coverage
+npm run test:cov
+```
+
+## 🏭 Production Deployment
+
+### Docker Deployment
+
+```bash
+# Build the Docker image
+docker build -t otp-service .
+
+# Run with Docker Compose
+docker-compose up -d
+```
+
+### Environment Setup
+
+Ensure all production environment variables are properly configured:
+
+- Database connections with proper credentials
+- Redis configuration for high availability
+- Email service API keys
+- WhatsApp API credentials
+- Proper JWT secrets and expiration times
+
+## 🔧 Development
+
+### Project Structure
+
+```
+src/
+├── core/                    # Core functionality
+│   ├── docs/               # API documentation
+│   ├── database/           # Database schemas and configuration
+│   ├── interfaces/         # TypeScript interfaces
+│   └── enums/              # Shared enumerations
+├── modules/                # Feature modules
+│   ├── auth/               # API key authentication
+│   ├── admin-auth/         # Admin authentication
+│   ├── client-auth/        # Customer authentication
+│   ├── clients/            # Client management
+│   ├── projects/           # Project management
+│   ├── otp/                # OTP operations
+│   ├── mail/               # Email service
+│   └── whatsapp/           # WhatsApp service
+└── main.ts                 # Application entry point
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Commit your changes: `git commit -am 'Add new feature'`
+4. Push to the branch: `git push origin feature/new-feature`
+5. Submit a pull request
+
+## 📊 Monitoring and Analytics
+
+The service provides comprehensive analytics including:
+
+- Token usage tracking per project
+- OTP delivery and verification rates
+- Channel performance (email vs WhatsApp)
+- Rate limiting metrics
+- Error tracking and logging
+
+## 🔒 Security Features
+
+- JWT-based authentication with configurable expiration
+- API key validation with project scoping
+- Rate limiting per project
+- Input validation and sanitization
+- Secure password hashing
+- Environment-based configuration
+
+## 📞 Support
+
+For technical support or questions:
+
+- Create an issue in the repository
+- Check the [documentation](src/core/docs/) for detailed guides
+- Review the interactive API documentation at `/api-docs`
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

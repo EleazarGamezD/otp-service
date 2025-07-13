@@ -1,11 +1,14 @@
+import {Logger} from '@nestjs/common';
+import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as dotenv from 'dotenv';
 
 export class EnvValidation {
+  private static readonly logger = new Logger(EnvValidation.name);
+
   private static getEnvVariables(filePath: string): string[] {
     if (!fs.existsSync(filePath)) {
-      console.error(`Archivo no encontrado: ${filePath}`);
+      this.logger.error(`Environment file not found: ${filePath}`);
       process.exit(1);
     }
 
@@ -20,7 +23,7 @@ export class EnvValidation {
     const envPath = path.resolve(process.cwd(), '.env');
     const envExamplePath = path.resolve(process.cwd(), '.env.example');
 
-    dotenv.config({ path: envPath });
+    dotenv.config({path: envPath});
 
     const envVariables = this.getEnvVariables(envPath);
     const envExampleVariables = this.getEnvVariables(envExamplePath);
@@ -30,10 +33,10 @@ export class EnvValidation {
     );
 
     if (missingVariables.length > 0) {
-      console.error(`Faltan las siguientes variables de entorno: ${missingVariables.join(', ')}`);
+      this.logger.error(`Missing environment variables: ${missingVariables.join(', ')}`);
       process.exit(1);
     } else {
-      console.log('Todas las variables de entorno están presentes.');
+      this.logger.log('All required environment variables are present.');
     }
   }
 }
