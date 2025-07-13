@@ -36,6 +36,8 @@ export interface ISecurityKeys {
 export interface IAdminKeys {
     username: string | undefined;
     password: string | undefined;
+    jwtSecret: string | undefined;
+    jwtExpiresIn: string | undefined;
 }
 
 export interface IConfiguration {

@@ -22,15 +22,17 @@ export function setupAdminSwagger(app: INestApplication) {
             '⚠️ **Warning:** These endpoints can modify system configuration and client data.',
         )
         .setVersion('1.0')
+        .addTag('Admin Authentication', 'Admin login and token management')
         .addTag('Client Management', 'Manage OTP service clients')
         .addTag('Mail Testing', 'Email system testing and debugging')
         .addTag('Server Health', 'Health check endpoints')
         .addServer(`http://localhost:${port}`, 'Local Development Server')
-        .addBasicAuth(
+        .addBearerAuth(
             {
                 type: 'http',
-                scheme: 'basic',
-                description: 'Admin credentials required'
+                scheme: 'bearer',
+                bearerFormat: 'JWT',
+                description: 'JWT token obtained from /admin/auth/login'
             },
             'admin-auth'
         )
@@ -42,7 +44,7 @@ export function setupAdminSwagger(app: INestApplication) {
     });
 
     // Filter only admin endpoints
-    const adminTags = ['Client Management', 'Mail Testing', 'Server Health'];
+    const adminTags = ['Admin Authentication', 'Client Management', 'Mail Testing', 'Server Health'];
     document.paths = Object.fromEntries(
         Object.entries(document.paths).filter(([path, pathObject]: [string, any]) =>
             Object.values(pathObject).some((operation: any) =>

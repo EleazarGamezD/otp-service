@@ -5,11 +5,13 @@ import {AuthModule} from "../auth/module/auth.module";
 import {ClientModule} from "../clients/module/client.module";
 import {HealthCheckModule} from "../health-check/health-check.module";
 import {MailerModule} from "../mail/module/mailer.module";
+import {OtpModule} from "../otp/module/otp.module";
 import {WhatsappModule} from "../whatsapp/module/whatsapp.module";
 
 const coreModules = [
     ConfigModule,
     DatabaseModule,
+    forwardRef(() => OtpModule),
     forwardRef(() => AuthModule),
     forwardRef(() => ClientModule),
     forwardRef(() => MailerModule),

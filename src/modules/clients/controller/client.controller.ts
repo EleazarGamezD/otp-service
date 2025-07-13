@@ -1,10 +1,12 @@
 import {IClientCreateRequest, IClientResponse, IClientUpdateRequest} from '@app/core/interfaces/clients/client.interface';
 import {Body, Controller, Get, Param, Patch, Post, Put} from '@nestjs/common';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {AdminAuth} from '../../admin-auth/decorator/admin-auth.decorator';
 import {ClientService} from '../service/client.service';
 
 @ApiTags('Client Management')
 @Controller('clients')
+@AdminAuth()
 export class ClientController {
     constructor(private readonly clientService: ClientService) { }
 

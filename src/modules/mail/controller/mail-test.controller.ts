@@ -1,9 +1,11 @@
 import {Body, Controller, Post} from '@nestjs/common';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {AdminAuth} from '../../admin-auth/decorator/admin-auth.decorator';
 import {MailService} from '../service/mail.service';
 
 @ApiTags('Mail Testing')
 @Controller('mail-test')
+@AdminAuth()
 export class MailTestController {
     constructor(private readonly mailService: MailService) { }
 

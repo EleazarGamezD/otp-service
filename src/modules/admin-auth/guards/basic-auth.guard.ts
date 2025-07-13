@@ -11,7 +11,6 @@ export class BasicAuthGuard implements CanActivate {
 
         // Skip authentication for swagger documentation paths
         if (request.path.includes('admin-docs')) {
-            return this.validateBasicAuth(request);
         }
 
         return true;

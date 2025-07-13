@@ -40,5 +40,7 @@ export default (): IConfiguration => ({
     adminKeys: {
         username: process.env.ADMIN_USERNAME,
         password: process.env.ADMIN_PASSWORD,
+        jwtSecret: process.env.ADMIN_JWT_SECRET,
+        jwtExpiresIn: process.env.ADMIN_JWT_EXPIRES_IN,
     },
 });
