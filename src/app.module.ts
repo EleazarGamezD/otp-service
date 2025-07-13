@@ -2,6 +2,7 @@ import {MiddlewareConsumer, Module} from '@nestjs/common';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import {LoggerModule} from 'nestjs-pino';
 import configuration from './core/IConfiguraion/configuration';
+import {AdminAuthMiddleware} from './modules/auth/admin-auth.middleware';
 import {RateLimitMiddleware} from './modules/auth/middleware/rate-limit.middleware';
 import {ClientModule} from './modules/clients/module/client.module';
 import {OtpModule} from './modules/otp/module/otp.module';
@@ -41,5 +42,6 @@ import {SharedModule} from './modules/shared/shared.module';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RateLimitMiddleware).forRoutes('otp');
+    consumer.apply(AdminAuthMiddleware).forRoutes('*');
   }
 }

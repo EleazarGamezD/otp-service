@@ -37,4 +37,8 @@ export default (): IConfiguration => ({
     securityKeys: {
         apiKeyHeader: process.env.API_KEY_HEADER,
     },
+    adminKeys: {
+        username: process.env.ADMIN_USERNAME,
+        password: process.env.ADMIN_PASSWORD,
+    },
 });

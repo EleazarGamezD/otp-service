@@ -33,6 +33,11 @@ export interface ISecurityKeys {
     apiKeyHeader: string | undefined;
 }
 
+export interface IAdminKeys {
+    username: string | undefined;
+    password: string | undefined;
+}
+
 export interface IConfiguration {
     port: number | undefined;
     mongoUri: string | undefined;
@@ -47,4 +52,5 @@ export interface IConfiguration {
     mailKeys: IMailKeys;
     whatsappKeys: IWhatsappKeys;
     securityKeys: ISecurityKeys;
+    adminKeys: IAdminKeys;
 }

@@ -1,55 +1,11 @@
 import {INestApplication} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
-import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
+import {setupAdminSwagger} from './admin-swagger';
+import {setupPublicSwagger} from './public-swagger';
 
 export function setupSwagger(app: INestApplication) {
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('port') || 3000;
+  // Setup public API documentation
+  setupPublicSwagger(app);
 
-  const config = new DocumentBuilder()
-    .setTitle('OTP Service API')
-    .setDescription(
-      'OTP Service is a robust microservice for One-Time Password (OTP) generation and verification.\n\n' +
-      'This service provides secure OTP delivery through multiple channels including email and WhatsApp.\n\n' +
-      'Features include:\n' +
-      '• OTP generation with configurable expiration times\n' +
-      '• Multi-channel delivery (Email & WhatsApp)\n' +
-      '• Rate limiting for security\n' +
-      '• API key authentication\n' +
-      '• Queue-based message processing\n\n' +
-      'Perfect for authentication flows, password resets, and secure verifications.',
-    )
-    .setVersion('1.0')
-    .addTag('OTP', 'One-Time Password operations')
-    .addTag('Authentication', 'API key validation')
-    .addServer(`http://localhost:${port}`, 'Local Development Server')
-    .addApiKey(
-      {
-        type: 'apiKey',
-        name: 'x-api-key',
-        in: 'header',
-        description: 'API Key for authentication. Contact administrator to obtain your API key.',
-      },
-      'api-key',
-    )
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-
-  const swaggerCustomOptions = {
-    customCssUrl:
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.5/swagger-ui.min.css',
-    customJs: [
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js',
-    ],
-    swaggerOptions: {
-      persistAuthorization: true,
-      docExpansion: 'list',
-      filter: true,
-      showRequestHeaders: true,
-    },
-  };
-
-  SwaggerModule.setup(`/api-docs`, app, document, swaggerCustomOptions);
+  // Setup admin panel documentation
+  setupAdminSwagger(app);
 }

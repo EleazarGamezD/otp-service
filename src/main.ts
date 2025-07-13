@@ -46,6 +46,7 @@ async function bootstrap() {
   const port = configService.get<number>('port') || 3000;
   await app.listen(port);
   logger.log(`🚀 OTP Service running on port ${port}`);
-  logger.log(`📚 API Documentation available at http://localhost:${port}/api-docs`);
+  logger.log(`📚 Public API Documentation: http://localhost:${port}/api-docs`);
+  logger.log(`🛠️ Admin Panel Documentation: http://localhost:${port}/admin-docs`);
 }
 bootstrap();
