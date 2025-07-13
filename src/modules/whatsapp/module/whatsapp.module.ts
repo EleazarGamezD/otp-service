@@ -1,8 +1,9 @@
-import {Module} from "@nestjs/common";
+import {Module, forwardRef} from "@nestjs/common";
+import {SharedModule} from "../../shared/shared.module";
 import {WhatsappService} from "../service/whatsapp.service";
 
 @Module({
-    imports: [],
+    imports: [forwardRef(() => SharedModule)],
     controllers: [],
     exports: [WhatsappService],
     providers: [WhatsappService]

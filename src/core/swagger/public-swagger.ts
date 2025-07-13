@@ -12,17 +12,20 @@ export function setupPublicSwagger(app: INestApplication) {
             '🔐 **OTP Service Public API**\n\n' +
             'This is the public API for OTP generation and verification.\n\n' +
             '**Available Operations:**\n' +
+            '• Customer registration and authentication\n' +
             '• Generate and send OTP codes\n' +
             '• Verify OTP codes\n' +
             '• Health check endpoints\n\n' +
             '**Authentication:**\n' +
-            'Requires a valid API key in the `x-api-key` header.\n\n' +
+            '• **For OTP Operations:** Requires a valid API key in the `x-api-key` header\n' +
+            '• **For Customer Panel:** Requires Bearer token after login\n\n' +
             '**Channels Supported:**\n' +
             '• Email (via Resend)\n' +
             '• WhatsApp\n\n' +
             '📧 **Contact:** For API keys and support, contact the administrator.',
         )
         .setVersion('1.0')
+        .addTag('Customer Authentication', 'Customer registration, login and profile management')
         .addTag('OTP', 'One-Time Password operations')
         .addTag('Server Health', 'Health check endpoints')
         .addServer(`http://localhost:${port}`, 'Local Development Server')
@@ -35,6 +38,15 @@ export function setupPublicSwagger(app: INestApplication) {
             },
             'api-key'
         )
+        .addBearerAuth(
+            {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT',
+                description: 'JWT token for customer authentication'
+            },
+            'client-jwt'
+        )
         .build();
 
     const document = SwaggerModule.createDocument(app, config, {
@@ -43,7 +55,7 @@ export function setupPublicSwagger(app: INestApplication) {
     });
 
     // Filter only public endpoints
-    const publicTags = ['OTP', 'Server Health'];
+    const publicTags = ['Customer Authentication', 'OTP', 'Server Health'];
     document.paths = Object.fromEntries(
         Object.entries(document.paths).filter(([path, pathObject]: [string, any]) =>
             Object.values(pathObject).some((operation: any) =>

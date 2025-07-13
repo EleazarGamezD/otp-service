@@ -1,8 +1,13 @@
 export interface IClient {
     id?: string;
     companyName: string;
+    email?: string;
+    password?: string;
+    role?: string;
     apiKey: string;
     isActive: boolean;
+    hasUnlimitedTokens?: boolean;
+    isProduction?: boolean;
     tokens: number;
     tokensUsed: number;
     rateLimitPerMinute: number;
@@ -33,8 +38,11 @@ export interface IClientCreateRequest {
 
 export interface IClientUpdateRequest {
     companyName?: string;
+    email?: string;
     isActive?: boolean;
     tokens?: number;
+    hasUnlimitedTokens?: boolean;
+    isProduction?: boolean;
     rateLimitPerMinute?: number;
     otpExpirationSeconds?: number;
     emailTemplate?: Partial<IEmailTemplate>;
@@ -44,8 +52,12 @@ export interface IClientUpdateRequest {
 export interface IClientResponse {
     id: string;
     companyName: string;
+    email?: string;
+    role?: string;
     apiKey: string;
     isActive: boolean;
+    hasUnlimitedTokens?: boolean;
+    isProduction?: boolean;
     tokens: number;
     tokensUsed: number;
     remainingTokens: number;

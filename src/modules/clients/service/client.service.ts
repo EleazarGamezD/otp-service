@@ -195,6 +195,16 @@ export class ClientService {
             throw new ForbiddenException('Client account is inactive');
         }
 
+        // Check if client has unlimited tokens
+        if (client.hasUnlimitedTokens) {
+            return {
+                tokensRemaining: -1, // -1 indicates unlimited
+                tokensUsed: client.tokensUsed,
+                canProceed: true,
+                reason: 'Unlimited tokens'
+            };
+        }
+
         const remainingTokens = client.tokens - client.tokensUsed;
 
         if (remainingTokens <= 0) {
@@ -206,7 +216,7 @@ export class ClientService {
             };
         }
 
-        // Increment used tokens
+        // Increment used tokens only if not unlimited
         const updatedClient = await this.clientModel.findByIdAndUpdate(
             client._id,
             {

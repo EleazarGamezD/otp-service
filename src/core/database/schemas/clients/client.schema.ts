@@ -15,11 +15,26 @@ export class Client extends Document {
   @Prop({required: true, trim: true})
   companyName: string;
 
+  @Prop({required: true, unique: true, lowercase: true, trim: true})
+  email: string;
+
+  @Prop({required: true})
+  password: string;
+
+  @Prop({required: true, enum: ['admin', 'customer'], default: 'customer'})
+  role: string;
+
   @Prop({required: true, unique: true, index: true})
   apiKey: string;
 
   @Prop({required: true, default: true})
   isActive: boolean;
+
+  @Prop({required: true, default: false})
+  hasUnlimitedTokens: boolean; // Para clientes especiales que no consumen tokens
+
+  @Prop({required: true, default: false})
+  isProduction: boolean; // Solo los admin pueden cambiar esto
 
   @Prop({required: true, default: 0, min: 0})
   tokens: number;

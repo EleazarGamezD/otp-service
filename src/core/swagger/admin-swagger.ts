@@ -10,20 +10,29 @@ export function setupAdminSwagger(app: INestApplication) {
         .setTitle('OTP Service - Admin Panel')
         .setDescription(
             '🛠️ **OTP Service Admin Panel**\n\n' +
-            'This is the administrative interface for managing OTP clients and system configuration.\n\n' +
+            'This is the administrative interface for managing OTP customers and system configuration.\n\n' +
             '**Admin Operations:**\n' +
-            '• Client management (create, update, delete)\n' +
+            '• Customer management (view, update, activate/deactivate)\n' +
             '• Token allocation and monitoring\n' +
+            '• Production environment management\n' +
+            '• Unlimited tokens assignment for special customers\n' +
+            '• API key regeneration\n' +
             '• Email template configuration\n' +
             '• System health monitoring\n' +
             '• Email testing tools\n\n' +
+            '**Customer Management:**\n' +
+            '• View all registered customers\n' +
+            '• Add tokens to customer accounts\n' +
+            '• Promote customers to production environment\n' +
+            '• Grant unlimited tokens to special customers\n' +
+            '• Regenerate API keys\n\n' +
             '**Security:**\n' +
             'This panel requires admin credentials and should only be accessed by authorized personnel.\n\n' +
-            '⚠️ **Warning:** These endpoints can modify system configuration and client data.',
+            '⚠️ **Warning:** These endpoints can modify system configuration and customer data.',
         )
         .setVersion('1.0')
         .addTag('Admin Authentication', 'Admin login and token management')
-        .addTag('Client Management', 'Manage OTP service clients')
+        .addTag('Admin - Customer Management', 'Manage OTP service customers (view, update, token management)')
         .addTag('Mail Testing', 'Email system testing and debugging')
         .addTag('Server Health', 'Health check endpoints')
         .addServer(`http://localhost:${port}`, 'Local Development Server')
@@ -32,7 +41,7 @@ export function setupAdminSwagger(app: INestApplication) {
                 type: 'http',
                 scheme: 'bearer',
                 bearerFormat: 'JWT',
-                description: 'JWT token obtained from /admin/auth/login'
+                description: 'JWT token obtained from /api/v1/admin/auth/login'
             },
             'admin-auth'
         )
@@ -44,7 +53,7 @@ export function setupAdminSwagger(app: INestApplication) {
     });
 
     // Filter only admin endpoints
-    const adminTags = ['Admin Authentication', 'Client Management', 'Mail Testing', 'Server Health'];
+    const adminTags = ['Admin Authentication', 'Admin - Customer Management', 'Mail Testing', 'Server Health'];
     document.paths = Object.fromEntries(
         Object.entries(document.paths).filter(([path, pathObject]: [string, any]) =>
             Object.values(pathObject).some((operation: any) =>
